@@ -1,292 +1,279 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>Ultimate Pro Text Editor</title>
+<title>AI Battle Ultimate Editor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+
 body{
-  background:#111;
-  color:white;
-  font-family:system-ui,"Segoe UI Emoji","Apple Color Emoji",sans-serif;
-  margin:0; padding:20px; text-align:center;
-}
-h2{margin-bottom:20px;}
-
-.controls{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  justify-content:center;
-  margin-bottom:20px;
+background:linear-gradient(135deg,#141e30,#243b55);
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+color:white;
 }
 
-input,select,button,textarea{
-  padding:8px;
-  font-size:14px;
-  border-radius:8px;
-  border:none;
+.app{
+width:95%;
+max-width:1300px;
+height:92vh;
+display:flex;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 0 50px rgba(0,0,0,0.7);
 }
 
-textarea{
-  width:200px;
-  height:60px;
-  resize:none;
+/* SIDEBAR */
+.sidebar{
+width:340px;
+background:rgba(0,0,0,0.65);
+padding:20px;
+overflow-y:auto;
 }
 
-button{
-  background:#00ffff;
-  cursor:pointer;
-  font-weight:bold;
+.sidebar h2{
+margin-bottom:15px;
+color:cyan;
 }
 
-#videoBox{
-  width:900px;
-  height:400px;
-  margin:auto;
-  background:#000;
-  border-radius:15px;
-  position:relative;
-  overflow:hidden;
+.sidebar input,
+.sidebar select,
+.sidebar textarea{
+width:100%;
+margin-bottom:10px;
+padding:8px;
+border-radius:8px;
+border:none;
+background:#111;
+color:white;
 }
 
-.textLayer{
-  position:absolute;
-  font-weight:bold;
-  white-space:pre-wrap;
-  cursor:move;
+.sidebar textarea{height:60px;}
+
+.btn{
+width:100%;
+padding:10px;
+margin-top:6px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,cyan,blue);
+color:white;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
 }
 
-/* ================== ANIMATIONS ================== */
-
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-@keyframes fadeOut{to{opacity:0;}}
-@keyframes slideUp{from{transform:translateY(100px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-@keyframes slideDown{to{transform:translateY(100px);opacity:0;}}
-@keyframes zoomIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
-@keyframes zoomOut{to{transform:scale(0);opacity:0;}to{opacity:0;}}
-
-.fadeIn{animation:fadeIn 1s forwards;}
-.fadeOut{animation:fadeOut 1s forwards;}
-.slideUp{animation:slideUp 1s forwards;}
-.slideDown{animation:slideDown 1s forwards;}
-.zoomIn{animation:zoomIn 1s forwards;}
-.zoomOut{animation:zoomOut 1s forwards;}
-
-/* ================== 10 TEXT STYLES ================== */
-
-.neon{
-  text-shadow:0 0 5px #fff,
-              0 0 10px #0ff,
-              0 0 20px #0ff,
-              0 0 40px #0ff;
+.btn:hover{
+transform:translateY(-2px);
+box-shadow:0 5px 15px rgba(0,255,255,0.5);
 }
 
-.fire{
-  text-shadow:0 0 5px #ff0000,
-              0 0 10px #ff4500,
-              0 0 20px #ff9900,
-              0 0 40px #ff0000;
+/* STAGE */
+.stage-container{
+flex:1;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
 }
 
-.electric{
-  text-shadow:0 0 5px #00f,
-              0 0 15px #00f,
-              0 0 30px #00ffff;
+#stage{
+width:92%;
+height:88%;
+background:black;
+border-radius:20px;
+position:relative;
+overflow:hidden;
+transition:0.5s;
 }
 
-.pinkshine{
-  text-shadow:0 0 10px #ff00ff,
-              0 0 20px #ff1493,
-              0 0 40px #ff00ff;
+.layer{
+position:absolute;
+font-weight:bold;
+text-align:center;
 }
 
-.gold{
-  color:gold;
-  text-shadow:0 0 5px #ffd700,
-              0 0 20px #ffaa00;
+/* Glow */
+.glow{
+text-shadow:
+0 0 5px var(--glowColor),
+0 0 15px var(--glowColor),
+0 0 30px var(--glowColor),
+0 0 60px var(--glowColor);
 }
 
-.threed{
-  text-shadow:2px 2px 0 #000,
-              4px 4px 5px rgba(0,0,0,0.5);
-}
+/* Animations */
 
-.rainbow{
-  background:linear-gradient(90deg,red,orange,yellow,green,blue,indigo,violet);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
 
-.glass{
-  color:white;
-  text-shadow:0 0 10px rgba(255,255,255,0.8);
-}
+@keyframes slideIn{from{transform:translate(-150%,-50%)}to{transform:translate(-50%,-50%)}}
+@keyframes slideOut{from{transform:translate(-50%,-50%)}to{transform:translate(150%,-50%)}}
 
-.horror{
-  color:red;
-  text-shadow:0 0 5px black,
-              0 0 20px darkred;
-}
-
-.softglow{
-  text-shadow:0 0 8px #ffffff,
-              0 0 15px #cccccc;
-}
-
-.timeline{
-  width:900px;
-  margin:20px auto;
-}
-
-.timeline input[type=range]{
-  width:100%;
-}
-
-.layer-control{
-  margin:5px;
-}
+@keyframes zoomIn{from{transform:translate(-50%,-50%) scale(0)}to{transform:translate(-50%,-50%) scale(1)}}
+@keyframes zoomOut{from{transform:translate(-50%,-50%) scale(1)}to{transform:translate(-50%,-50%) scale(0)}}
 
 </style>
 </head>
+
 <body>
 
-<h2>🎬 Ultimate Mini CapCut Text Editor</h2>
+<div class="app">
 
-<div class="controls">
-<textarea id="textInput" placeholder="Enter Text 😄"></textarea>
-<input type="number" id="fontSize" value="60">
-<select id="fontFamily">
-<option>Arial</option>
-<option>Impact</option>
-<option>Courier New</option>
-<option>Georgia</option>
-<option>Verdana</option>
-</select>
-<input type="color" id="textColor" value="#00ffff">
-<input type="number" id="posX" value="100">
-<input type="number" id="posY" value="150">
+<div class="sidebar">
+<h2>AI Ultimate Editor</h2>
 
-<select id="inAnimation">
+<textarea id="text" placeholder="Enter Text"></textarea>
+
+<input type="number" id="size" value="60">
+<input type="color" id="color" value="#00ffff">
+
+<select id="inAnim">
 <option value="fadeIn">Fade In</option>
-<option value="slideUp">Slide Up</option>
+<option value="slideIn">Slide In</option>
 <option value="zoomIn">Zoom In</option>
 </select>
 
-<select id="outAnimation">
+<select id="outAnim">
 <option value="fadeOut">Fade Out</option>
-<option value="slideDown">Slide Down</option>
+<option value="slideOut">Slide Out</option>
 <option value="zoomOut">Zoom Out</option>
 </select>
 
-<select id="textStyle">
-<option value="">Normal</option>
-<option value="neon">Neon</option>
-<option value="fire">Fire</option>
-<option value="electric">Electric</option>
-<option value="pinkshine">Pink Shine</option>
-<option value="gold">Gold</option>
-<option value="threed">3D</option>
-<option value="rainbow">Rainbow</option>
-<option value="glass">Glass</option>
-<option value="horror">Horror</option>
-<option value="softglow">Soft Glow</option>
+<label>In Duration</label>
+<input type="number" id="inDur" value="1" step="0.5">
+
+<label>Stay Time</label>
+<input type="number" id="stay" value="3">
+
+<label>Out Duration</label>
+<input type="number" id="outDur" value="1" step="0.5">
+
+<label>Glow</label>
+<select id="glowToggle">
+<option value="off">OFF</option>
+<option value="on">ON</option>
 </select>
 
-<input type="number" id="duration" value="3" min="1">
-<button onclick="addLayer()">Add Layer</button>
-<button onclick="playPreview()">Play Preview</button>
+<input type="color" id="glowColor" value="#ff0000">
+
+<label>Background Color</label>
+<input type="color" id="bgColor" value="#000000">
+
+<label>Gradient Background</label>
+<select id="bgGradient">
+<option value="none">None</option>
+<option value="purple">Purple</option>
+<option value="sunset">Sunset</option>
+<option value="ocean">Ocean</option>
+</select>
+
+<button class="btn" onclick="addLayer()">Add Layer</button>
+<button class="btn" onclick="playSequence()">▶ Play</button>
+<button class="btn" onclick="stopSequence()">⏹ Stop</button>
+
 </div>
 
-<div id="layerList"></div>
-<div id="videoBox"></div>
+<div class="stage-container">
+<div id="stage"></div>
+</div>
 
-<div class="timeline">
-<label>🎛 Timeline</label>
-<input type="range" id="timelineSlider" min="0" max="100" value="0">
 </div>
 
 <script>
+
 let layers=[];
-let interval;
+let index=0;
+let playing=false;
 
 function addLayer(){
-  let l={
-    text:textInput.value,
-    fontSize:fontSize.value,
-    fontFamily:fontFamily.value,
-    textColor:textColor.value,
-    posX:parseInt(posX.value),
-    posY:parseInt(posY.value),
-    inAnim:inAnimation.value,
-    outAnim:outAnimation.value,
-    duration:parseInt(duration.value),
-    style:textStyle.value
-  };
-  layers.push(l);
-  renderLayerList();
+layers.push({
+text:text.value,
+size:size.value,
+color:color.value,
+inAnim:inAnim.value,
+outAnim:outAnim.value,
+inDur:parseFloat(inDur.value),
+stay:parseFloat(stay.value),
+outDur:parseFloat(outDur.value),
+glow:glowToggle.value,
+glowColor:glowColor.value
+});
+alert("Layer Added ✅ Total: "+layers.length);
 }
 
-function renderLayerList(){
-  layerList.innerHTML="";
-  layers.forEach((l,i)=>{
-    layerList.innerHTML+=`<div class="layer-control">
-      ${i+1}: ${l.text}
-      <button onclick="removeLayer(${i})">❌</button>
-    </div>`;
-  });
+function playSequence(){
+if(layers.length===0){alert("Add Layer First");return;}
+applyBackground();
+playing=true;
+index=0;
+showLayer();
 }
 
-function removeLayer(i){
-  layers.splice(i,1);
-  renderLayerList();
+function showLayer(){
+if(!playing) return;
+
+if(index>=layers.length){index=0;}
+
+let l=layers[index];
+let stage=document.getElementById("stage");
+stage.innerHTML="";
+
+let div=document.createElement("div");
+div.className="layer";
+div.innerText=l.text;
+div.style.fontSize=l.size+"px";
+div.style.color=l.color;
+div.style.left="50%";
+div.style.top="50%";
+div.style.transform="translate(-50%,-50%)";
+
+if(l.glow==="on"){
+div.classList.add("glow");
+div.style.setProperty("--glowColor",l.glowColor);
 }
 
-function playPreview(){
-  clearInterval(interval);
-  videoBox.innerHTML="";
-  timelineSlider.value=0;
+div.style.animation=l.inAnim+" "+l.inDur+"s forwards";
+stage.appendChild(div);
 
-  let totalTime=layers.reduce((sum,l)=>sum+l.duration,0)*1000;
-  let currentTime=0;
-  let index=0;
+setTimeout(()=>{
+div.style.animation=l.outAnim+" "+l.outDur+"s forwards";
+},(l.inDur+l.stay)*1000);
 
-  function showLayer(){
-    if(index>=layers.length) return;
-
-    let l=layers[index];
-    let div=document.createElement("div");
-
-    div.className="textLayer "+l.style+" "+l.inAnim;
-    div.innerText=l.text;
-    div.style.fontSize=l.fontSize+"px";
-    div.style.fontFamily=l.fontFamily;
-    div.style.color=l.textColor;
-    div.style.left=l.posX+"px";
-    div.style.top=l.posY+"px";
-
-    videoBox.appendChild(div);
-
-    setTimeout(()=>{
-      div.classList.remove(l.inAnim);
-      div.classList.add(l.outAnim);
-    },l.duration*1000);
-
-    setTimeout(()=>{
-      videoBox.removeChild(div);
-      index++;
-      showLayer();
-    },(l.duration+1)*1000);
-  }
-
-  showLayer();
-
-  interval=setInterval(()=>{
-    currentTime+=100;
-    timelineSlider.value=(currentTime/totalTime)*100;
-    if(currentTime>=totalTime) clearInterval(interval);
-  },100);
+setTimeout(()=>{
+index++;
+showLayer();
+},(l.inDur+l.stay+l.outDur)*1000);
 }
+
+function stopSequence(){
+playing=false;
+stage.innerHTML="";
+}
+
+function applyBackground(){
+let stage=document.getElementById("stage");
+let color=document.getElementById("bgColor").value;
+let gradient=document.getElementById("bgGradient").value;
+
+if(gradient==="none"){
+stage.style.background=color;
+}
+if(gradient==="purple"){
+stage.style.background="linear-gradient(45deg,#41295a,#2F0743)";
+}
+if(gradient==="sunset"){
+stage.style.background="linear-gradient(45deg,#ff512f,#dd2476)";
+}
+if(gradient==="ocean"){
+stage.style.background="linear-gradient(45deg,#2193b0,#6dd5ed)";
+}
+}
+
 </script>
 
 </body>
