@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Typography Generator</title>
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: black;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+input {
+    padding: 12px;
+    width: 300px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: none;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    background: #00f2ff;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#output {
+    position: absolute;
+    font-size: 60px;
+    color: white;
+    text-align: center;
+    opacity: 0;
+}
+
+.glow {
+    text-shadow: 
+        0 0 10px #00f2ff,
+        0 0 20px #00f2ff,
+        0 0 40px #00f2ff,
+        0 0 80px #00f2ff;
+}
+
+.animate {
+    animation: slideIn 1.5s ease forwards, fadeOut 1.5s ease 4s forwards;
+}
+
+@keyframes slideIn {
+    0% { transform: translateY(100px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<input type="text" id="textInput" placeholder="Enter your text">
+<button onclick="generate()">Generate</button>
+
+<div id="output"></div>
+
+<script>
+function generate() {
+    let text = document.getElementById("textInput").value;
+    let output = document.getElementById("output");
+
+    output.classList.remove("animate");
+    void output.offsetWidth; 
+
+    output.innerText = text;
+    output.classList.add("glow");
+    output.classList.add("animate");
+}
+</script>
+
+</body>
+</html>
