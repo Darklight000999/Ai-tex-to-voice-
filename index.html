@@ -1,89 +1,163 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>AI Typography Generator</title>
+<title>Pro Typography Generator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
-body {
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: black;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
+body{
+margin:0;
+background:#000;
+color:white;
+font-family:sans-serif;
+display:flex;
+flex-direction:column;
+align-items:center;
 }
 
-input {
-    padding: 12px;
-    width: 300px;
-    font-size: 18px;
-    border-radius: 5px;
-    border: none;
-    margin-bottom: 10px;
+.controls{
+margin:20px;
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+justify-content:center;
 }
 
-button {
-    padding: 10px 20px;
-    font-size: 18px;
-    border: none;
-    background: #00f2ff;
-    cursor: pointer;
-    border-radius: 5px;
+input,select,button{
+padding:8px;
+font-size:14px;
 }
 
-#output {
-    position: absolute;
-    font-size: 60px;
-    color: white;
-    text-align: center;
-    opacity: 0;
+#stage{
+width:800px;
+height:450px;
+background:black;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+position:relative;
 }
 
-.glow {
-    text-shadow: 
-        0 0 10px #00f2ff,
-        0 0 20px #00f2ff,
-        0 0 40px #00f2ff,
-        0 0 80px #00f2ff;
-}
-
-.animate {
-    animation: slideIn 1.5s ease forwards, fadeOut 1.5s ease 4s forwards;
-}
-
-@keyframes slideIn {
-    0% { transform: translateY(100px); opacity: 0; }
-    100% { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes fadeOut {
-    to { opacity: 0; }
+#text{
+position:absolute;
+font-weight:bold;
+opacity:0;
 }
 </style>
 </head>
-
 <body>
 
-<input type="text" id="textInput" placeholder="Enter your text">
-<button onclick="generate()">Generate</button>
+<h2>Pro Typography Generator</h2>
 
-<div id="output"></div>
+<div class="controls">
+<input type="text" id="userText" placeholder="Enter Text">
+<select id="animation">
+<option value="fade">Fade In</option>
+<option value="slideUp">Slide Up</option>
+<option value="slideLeft">Slide Left</option>
+<option value="zoom">Zoom</option>
+<option value="rotate">Rotate</option>
+<option value="bounce">Bounce</option>
+<option value="flip">Flip</option>
+<option value="blur">Blur</option>
+<option value="scale">Scale Pop</option>
+<option value="skew">Skew</option>
+<option value="glitch">Glitch</option>
+<option value="wave">Wave</option>
+</select>
+
+<input type="number" id="duration" placeholder="Duration (sec)" value="3">
+<input type="color" id="color" value="#ffffff">
+<input type="number" id="size" placeholder="Font Size" value="60">
+<button onclick="generate()">Generate</button>
+<button onclick="downloadVideo()">Download Video</button>
+</div>
+
+<div id="stage">
+<div id="text"></div>
+</div>
 
 <script>
-function generate() {
-    let text = document.getElementById("textInput").value;
-    let output = document.getElementById("output");
 
-    output.classList.remove("animate");
-    void output.offsetWidth; 
+function generate(){
+let txt=document.getElementById("userText").value;
+let anim=document.getElementById("animation").value;
+let duration=parseFloat(document.getElementById("duration").value);
+let color=document.getElementById("color").value;
+let size=document.getElementById("size").value;
 
-    output.innerText = text;
-    output.classList.add("glow");
-    output.classList.add("animate");
+let text=document.getElementById("text");
+
+text.innerHTML=txt;
+text.style.fontSize=size+"px";
+text.style.color=color;
+text.style.opacity=1;
+
+gsap.killTweensOf(text);
+gsap.set(text,{clearProps:"all"});
+text.style.fontSize=size+"px";
+text.style.color=color;
+
+switch(anim){
+
+case "fade":
+gsap.from(text,{opacity:0,duration:1});
+break;
+
+case "slideUp":
+gsap.from(text,{y:200,opacity:0,duration:1});
+break;
+
+case "slideLeft":
+gsap.from(text,{x:-400,opacity:0,duration:1});
+break;
+
+case "zoom":
+gsap.from(text,{scale:0,opacity:0,duration:1});
+break;
+
+case "rotate":
+gsap.from(text,{rotation:360,opacity:0,duration:1});
+break;
+
+case "bounce":
+gsap.from(text,{y:-300,opacity:0,duration:1,ease:"bounce"});
+break;
+
+case "flip":
+gsap.from(text,{rotationY:180,opacity:0,duration:1});
+break;
+
+case "blur":
+gsap.from(text,{filter:"blur(20px)",opacity:0,duration:1});
+break;
+
+case "scale":
+gsap.from(text,{scale:3,opacity:0,duration:1});
+break;
+
+case "skew":
+gsap.from(text,{skewX:45,opacity:0,duration:1});
+break;
+
+case "glitch":
+gsap.from(text,{x:-10,repeat:10,yoyo:true,duration:0.05});
+break;
+
+case "wave":
+gsap.from(text,{y:-20,repeat:5,yoyo:true,duration:0.2});
+break;
 }
+
+gsap.to(text,{opacity:0,delay:duration,duration:1});
+
+}
+
+function downloadVideo(){
+alert("Browser limitation: Direct MP4 export needs backend or advanced library.");
+}
+
 </script>
 
 </body>
