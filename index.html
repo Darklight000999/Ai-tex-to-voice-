@@ -2,36 +2,36 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Rectangle Typography Generator</title>
+<title>Ultimate Glow Typography</title>
 
 <style>
 body{
-background:#111;
-font-family:sans-serif;
+background:#0f0f0f;
 color:white;
+font-family:Arial;
 text-align:center;
 margin:0;
 padding:20px;
 }
 
-/* Control Area */
+/* Controls */
 .controls{
 margin-bottom:20px;
 }
 
-input,select,button{
-padding:8px;
+input,button{
+padding:10px;
 margin:5px;
-font-size:14px;
+font-size:16px;
 }
 
 /* Rectangle Video Area */
 #videoBox{
-width:800px;
-height:300px;
-margin:0 auto;
+width:900px;
+height:350px;
+margin:20px auto;
 background:black;
-border-radius:12px;
+border-radius:15px;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -39,91 +39,99 @@ overflow:hidden;
 position:relative;
 }
 
-/* Animated Text */
+/* Text Style */
 #animatedText{
-font-size:60px;
+font-size:70px;
 font-weight:bold;
-opacity:0;
 position:absolute;
+opacity:0;
+transition:all 0.5s ease;
 }
 
-/* Animations */
-
-.fadeIn{
-animation:fadeIn 1s forwards;
+/* Glow Effect */
+.glow{
+text-shadow:
+0 0 10px currentColor,
+0 0 20px currentColor,
+0 0 40px currentColor,
+0 0 80px currentColor;
 }
 
-.slideUp{
-animation:slideUp 1s forwards;
-}
+/* Base Animations */
 
-.zoomIn{
-animation:zoomIn 1s forwards;
-}
+@keyframes fade {from{opacity:0;} to{opacity:1;}}
+@keyframes slideUp {from{transform:translateY(150px);opacity:0;} to{transform:translateY(0);opacity:1;}}
+@keyframes slideLeft {from{transform:translateX(-300px);opacity:0;} to{transform:translateX(0);opacity:1;}}
+@keyframes zoom {from{transform:scale(0);opacity:0;} to{transform:scale(1);opacity:1;}}
+@keyframes rotate {from{transform:rotate(360deg);opacity:0;} to{transform:rotate(0);opacity:1;}}
+@keyframes bounce {0%{transform:translateY(-200px);} 60%{transform:translateY(30px);} 100%{transform:translateY(0);opacity:1;}}
+@keyframes flip {from{transform:rotateY(180deg);opacity:0;} to{transform:rotateY(0);opacity:1;}}
+@keyframes skew {from{transform:skewX(45deg);opacity:0;} to{transform:skewX(0);opacity:1;}}
 
-.rotateIn{
-animation:rotateIn 1s forwards;
-}
+/* Extra Effects */
+.blur {filter:blur(0);}
+.blurAnim {animation:blurIn 1s forwards;}
+@keyframes blurIn {from{filter:blur(20px);opacity:0;} to{filter:blur(0);opacity:1;}}
 
-@keyframes fadeIn{
-from{opacity:0;}
-to{opacity:1;}
-}
+.pulse {animation:pulse 1s infinite alternate;}
+@keyframes pulse {from{transform:scale(1);} to{transform:scale(1.1);}}
 
-@keyframes slideUp{
-from{transform:translateY(100px);opacity:0;}
-to{transform:translateY(0);opacity:1;}
-}
+/* Random Animation Classes */
+.fade{animation:fade 1s forwards;}
+.slideUp{animation:slideUp 1s forwards;}
+.slideLeft{animation:slideLeft 1s forwards;}
+.zoom{animation:zoom 1s forwards;}
+.rotate{animation:rotate 1s forwards;}
+.bounce{animation:bounce 1s forwards;}
+.flip{animation:flip 1s forwards;}
+.skew{animation:skew 1s forwards;}
 
-@keyframes zoomIn{
-from{transform:scale(0);opacity:0;}
-to{transform:scale(1);opacity:1;}
-}
-
-@keyframes rotateIn{
-from{transform:rotate(360deg);opacity:0;}
-to{transform:rotate(0);opacity:1;}
-}
 </style>
 </head>
 
 <body>
 
-<h2>Rectangle Typography Generator</h2>
+<h2>🔥 Ultimate Glow Typography Generator</h2>
 
 <div class="controls">
-<input type="text" id="userText" placeholder="Enter Text">
-<select id="animationType">
-<option value="fadeIn">Fade In</option>
-<option value="slideUp">Slide Up</option>
-<option value="zoomIn">Zoom In</option>
-<option value="rotateIn">Rotate In</option>
-</select>
+<input type="text" id="userText" placeholder="Enter Your Text">
+<input type="color" id="colorPicker" value="#00ffff">
 <button onclick="generate()">Generate</button>
 </div>
 
-<!-- Rectangle Area -->
 <div id="videoBox">
 <div id="animatedText"></div>
 </div>
 
 <script>
+
+let baseAnimations=["fade","slideUp","slideLeft","zoom","rotate","bounce","flip","skew"];
+let extraEffects=["","pulse","blurAnim"];
+
 function generate(){
 
 let text=document.getElementById("userText").value;
-let animation=document.getElementById("animationType").value;
+let color=document.getElementById("colorPicker").value;
 let output=document.getElementById("animatedText");
 
-output.className=""; 
-output.innerText=text;
-output.style.opacity="0";
-
-/* Restart animation */
+/* Reset */
+output.className="";
 void output.offsetWidth;
 
-output.classList.add(animation);
+output.innerText=text;
+output.style.color=color;
+output.style.opacity="1";
+
+/* Random Animation */
+let randomBase=baseAnimations[Math.floor(Math.random()*baseAnimations.length)];
+let randomExtra=extraEffects[Math.floor(Math.random()*extraEffects.length)];
+
+output.classList.add("glow");
+output.classList.add(randomBase);
+if(randomExtra!==""){output.classList.add(randomExtra);}
 
 }
+
 </script>
 
 </body>
