@@ -2,36 +2,36 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Pro Typography Generator</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<title>Rectangle Typography Generator</title>
+
 <style>
 body{
-margin:0;
-background:#000;
-color:white;
+background:#111;
 font-family:sans-serif;
-display:flex;
-flex-direction:column;
-align-items:center;
+color:white;
+text-align:center;
+margin:0;
+padding:20px;
 }
 
+/* Control Area */
 .controls{
-margin:20px;
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-justify-content:center;
+margin-bottom:20px;
 }
 
 input,select,button{
 padding:8px;
+margin:5px;
 font-size:14px;
 }
 
-#stage{
+/* Rectangle Video Area */
+#videoBox{
 width:800px;
-height:450px;
+height:300px;
+margin:0 auto;
 background:black;
+border-radius:12px;
 display:flex;
 align-items:center;
 justify-content:center;
@@ -39,125 +39,91 @@ overflow:hidden;
 position:relative;
 }
 
-#text{
-position:absolute;
+/* Animated Text */
+#animatedText{
+font-size:60px;
 font-weight:bold;
 opacity:0;
+position:absolute;
+}
+
+/* Animations */
+
+.fadeIn{
+animation:fadeIn 1s forwards;
+}
+
+.slideUp{
+animation:slideUp 1s forwards;
+}
+
+.zoomIn{
+animation:zoomIn 1s forwards;
+}
+
+.rotateIn{
+animation:rotateIn 1s forwards;
+}
+
+@keyframes fadeIn{
+from{opacity:0;}
+to{opacity:1;}
+}
+
+@keyframes slideUp{
+from{transform:translateY(100px);opacity:0;}
+to{transform:translateY(0);opacity:1;}
+}
+
+@keyframes zoomIn{
+from{transform:scale(0);opacity:0;}
+to{transform:scale(1);opacity:1;}
+}
+
+@keyframes rotateIn{
+from{transform:rotate(360deg);opacity:0;}
+to{transform:rotate(0);opacity:1;}
 }
 </style>
 </head>
+
 <body>
 
-<h2>Pro Typography Generator</h2>
+<h2>Rectangle Typography Generator</h2>
 
 <div class="controls">
 <input type="text" id="userText" placeholder="Enter Text">
-<select id="animation">
-<option value="fade">Fade In</option>
+<select id="animationType">
+<option value="fadeIn">Fade In</option>
 <option value="slideUp">Slide Up</option>
-<option value="slideLeft">Slide Left</option>
-<option value="zoom">Zoom</option>
-<option value="rotate">Rotate</option>
-<option value="bounce">Bounce</option>
-<option value="flip">Flip</option>
-<option value="blur">Blur</option>
-<option value="scale">Scale Pop</option>
-<option value="skew">Skew</option>
-<option value="glitch">Glitch</option>
-<option value="wave">Wave</option>
+<option value="zoomIn">Zoom In</option>
+<option value="rotateIn">Rotate In</option>
 </select>
-
-<input type="number" id="duration" placeholder="Duration (sec)" value="3">
-<input type="color" id="color" value="#ffffff">
-<input type="number" id="size" placeholder="Font Size" value="60">
 <button onclick="generate()">Generate</button>
-<button onclick="downloadVideo()">Download Video</button>
 </div>
 
-<div id="stage">
-<div id="text"></div>
+<!-- Rectangle Area -->
+<div id="videoBox">
+<div id="animatedText"></div>
 </div>
 
 <script>
-
 function generate(){
-let txt=document.getElementById("userText").value;
-let anim=document.getElementById("animation").value;
-let duration=parseFloat(document.getElementById("duration").value);
-let color=document.getElementById("color").value;
-let size=document.getElementById("size").value;
 
-let text=document.getElementById("text");
+let text=document.getElementById("userText").value;
+let animation=document.getElementById("animationType").value;
+let output=document.getElementById("animatedText");
 
-text.innerHTML=txt;
-text.style.fontSize=size+"px";
-text.style.color=color;
-text.style.opacity=1;
+output.className=""; 
+output.innerText=text;
+output.style.opacity="0";
 
-gsap.killTweensOf(text);
-gsap.set(text,{clearProps:"all"});
-text.style.fontSize=size+"px";
-text.style.color=color;
+/* Restart animation */
+void output.offsetWidth;
 
-switch(anim){
-
-case "fade":
-gsap.from(text,{opacity:0,duration:1});
-break;
-
-case "slideUp":
-gsap.from(text,{y:200,opacity:0,duration:1});
-break;
-
-case "slideLeft":
-gsap.from(text,{x:-400,opacity:0,duration:1});
-break;
-
-case "zoom":
-gsap.from(text,{scale:0,opacity:0,duration:1});
-break;
-
-case "rotate":
-gsap.from(text,{rotation:360,opacity:0,duration:1});
-break;
-
-case "bounce":
-gsap.from(text,{y:-300,opacity:0,duration:1,ease:"bounce"});
-break;
-
-case "flip":
-gsap.from(text,{rotationY:180,opacity:0,duration:1});
-break;
-
-case "blur":
-gsap.from(text,{filter:"blur(20px)",opacity:0,duration:1});
-break;
-
-case "scale":
-gsap.from(text,{scale:3,opacity:0,duration:1});
-break;
-
-case "skew":
-gsap.from(text,{skewX:45,opacity:0,duration:1});
-break;
-
-case "glitch":
-gsap.from(text,{x:-10,repeat:10,yoyo:true,duration:0.05});
-break;
-
-case "wave":
-gsap.from(text,{y:-20,repeat:5,yoyo:true,duration:0.2});
-break;
-}
-
-gsap.to(text,{opacity:0,delay:duration,duration:1});
+output.classList.add(animation);
 
 }
-
-function downloadVideo(){
-alert("Browser limitation: Direct MP4 export needs backend or advanced library.");
-}
-
 </script>
 
 </body>
