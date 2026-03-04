@@ -2,158 +2,317 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Ultimate Pro Text Editor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Battle Editor 5.0</title>
+
 <style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+
 body{
-  background:#111;
-  color:white;
-  font-family:system-ui,"Segoe UI Emoji","Apple Color Emoji",sans-serif;
-  margin:0; padding:20px; text-align:center;
+height:100vh;
+background:linear-gradient(-45deg,#0f0c29,#302b63,#24243e,#1c1c1c);
+background-size:400% 400%;
+animation:bgMove 15s ease infinite;
+display:flex;
+justify-content:center;
+align-items:center;
+color:white;
 }
-h2{margin-bottom:20px;}
-.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:20px;}
-input,select,button,textarea{padding:8px;font-size:14px;}
-textarea{width:200px;height:60px;resize:none;}
-#videoBox{width:900px;height:400px;margin:auto;background:#000;border-radius:15px;position:relative;overflow:hidden;}
-.textLayer{position:absolute;font-weight:bold;white-space:pre-wrap;opacity:0;cursor:move;}
-.glow{text-shadow:0 0 10px var(--shadowColor),0 0 20px var(--shadowColor),0 0 40px var(--shadowColor);}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-@keyframes fadeOut{to{opacity:0;}}
-@keyframes slideUp{from{transform:translateY(100px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-@keyframes slideDown{to{transform:translateY(100px);opacity:0;}}
-@keyframes zoomIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
-@keyframes zoomOut{to{transform:scale(0);opacity:0;}}
-.fadeIn{animation:fadeIn 1s forwards;}
-.fadeOut{animation:fadeOut 1s forwards;}
-.slideUp{animation:slideUp 1s forwards;}
-.slideDown{animation:slideDown 1s forwards;}
-.zoomIn{animation:zoomIn 1s forwards;}
-.zoomOut{animation:zoomOut 1s forwards;}
-.timeline{width:900px;margin:20px auto;}
-.timeline input[type=range]{width:100%;}
-.layer-control{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin:10px;}
+
+@keyframes bgMove{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.app{
+width:95%;
+max-width:1300px;
+height:92vh;
+display:flex;
+border-radius:20px;
+overflow:hidden;
+backdrop-filter:blur(20px);
+box-shadow:0 0 50px rgba(0,0,0,0.6);
+}
+
+.sidebar{
+width:320px;
+background:rgba(255,255,255,0.06);
+padding:20px;
+overflow-y:auto;
+border-right:1px solid rgba(255,255,255,0.1);
+}
+
+.sidebar h2{
+margin-bottom:15px;
+color:cyan;
+}
+
+.sidebar input,
+.sidebar select,
+.sidebar textarea{
+width:100%;
+margin-bottom:10px;
+padding:8px;
+border-radius:10px;
+border:none;
+background:rgba(255,255,255,0.12);
+color:white;
+}
+
+.sidebar textarea{height:60px;resize:none}
+
+.btn{
+width:100%;
+padding:10px;
+margin-bottom:10px;
+border-radius:12px;
+border:none;
+font-weight:bold;
+cursor:pointer;
+transition:all .3s ease;
+background:linear-gradient(90deg,cyan,blue);
+color:white;
+}
+
+.btn:hover{
+transform:translateY(-3px);
+box-shadow:0 10px 20px rgba(0,255,255,0.4);
+}
+
+.stage-container{
+flex:1;
+display:flex;
+justify-content:center;
+align-items:center;
+background:black;
+position:relative;
+}
+
+#stage{
+width:90%;
+height:85%;
+border-radius:20px;
+background:#000;
+position:relative;
+overflow:hidden;
+box-shadow:0 0 40px rgba(0,0,0,0.8);
+}
+
+.layer{
+position:absolute;
+font-weight:bold;
+cursor:move;
+user-select:none;
+resize:both;
+overflow:auto;
+min-width:50px;
+min-height:30px;
+}
+
+.layer:hover{transform:scale(1.05)}
+
+/* Effects */
+
+.neon{text-shadow:0 0 10px cyan,0 0 30px cyan;}
+.fire{text-shadow:0 0 10px red,0 0 30px orange;}
+.rainbow{
+background:linear-gradient(90deg,red,orange,yellow,green,blue,violet);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+.pulse{animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:0.5}}
+.rotate{animation:spin 4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bounce{animation:bounce 1s infinite}
+@keyframes bounce{50%{transform:translateY(-20px)}}
+.glitch{animation:glitch .3s infinite}
+@keyframes glitch{
+0%{transform:translate(1px,1px)}
+50%{transform:translate(-1px,-1px)}
+100%{transform:translate(1px,-1px)}
+}
+.stroke{-webkit-text-stroke:2px black;}
+
+@media(max-width:900px){
+.app{flex-direction:column}
+.sidebar{width:100%;height:300px}
+.stage-container{height:calc(100% - 300px)}
+}
 </style>
 </head>
+
 <body>
 
-<h2>🎬 Ultimate Mini CapCut Text Editor</h2>
+<div class="app">
 
-<div class="controls">
-<textarea id="textInput" placeholder="Enter Text 😄"></textarea>
-<input type="number" id="fontSize" value="60" placeholder="Font Size">
-<select id="fontFamily">
-<option value="Arial">Arial</option>
-<option value="Impact">Impact</option>
-<option value="Courier New">Courier</option>
-<option value="Georgia">Georgia</option>
-<option value="Verdana">Verdana</option>
+<div class="sidebar">
+<h2>AI Battle Controls</h2>
+
+<textarea id="text" placeholder="Enter Text"></textarea>
+<input type="number" id="size" value="60">
+<input type="color" id="color" value="#00ffff">
+
+<select id="effect">
+<option value="">Normal</option>
+<option value="neon">Neon</option>
+<option value="fire">Fire</option>
+<option value="rainbow">Rainbow</option>
+<option value="pulse">Pulse</option>
+<option value="rotate">Rotate</option>
+<option value="bounce">Bounce</option>
+<option value="glitch">Glitch</option>
+<option value="stroke">Stroke</option>
 </select>
-<input type="color" id="textColor" value="#00ffff">
-<input type="color" id="shadowColor" value="#00ffff">
-<input type="number" id="posX" value="0" placeholder="X Position">
-<input type="number" id="posY" value="0" placeholder="Y Position">
-<select id="inAnimation">
-<option value="fadeIn">Fade In</option>
-<option value="slideUp">Slide Up</option>
-<option value="zoomIn">Zoom In</option>
-</select>
-<select id="outAnimation">
-<option value="fadeOut">Fade Out</option>
-<option value="slideDown">Slide Down</option>
-<option value="zoomOut">Zoom Out</option>
-</select>
-<input type="number" id="duration" value="3" min="1" placeholder="Duration(s)">
-<button onclick="addLayer()">Add Layer</button>
-<button onclick="playPreview()">Play Preview</button>
+
+<button class="btn" onclick="addLayer()">Add Layer</button>
+<button class="btn" onclick="startSpeech()">Speech → Text</button>
+<button class="btn" onclick="recordVoice()">Record Voice</button>
+<button class="btn" onclick="exportVideo()">Export Video</button>
+<button class="btn" onclick="saveProject()">Save Project</button>
+
+<input type="file" accept="image/*,video/*" onchange="setBG(event)">
+<input type="file" accept="audio/*" onchange="setMusic(event)">
 </div>
 
-<div id="layerList"></div>
-
-<div id="videoBox"></div>
-
-<div class="timeline">
-<label>🎛 Timeline</label><br>
-<input type="range" id="timelineSlider" min="0" max="100" value="0">
+<div class="stage-container">
+<div id="stage"></div>
 </div>
+
+</div>
+
+<audio id="music"></audio>
 
 <script>
 let layers=[];
-let interval;
+let audioCtx, analyser, dataArray;
 
 function addLayer(){
-  let l={
-    text: document.getElementById("textInput").value,
-    fontSize: document.getElementById("fontSize").value,
-    fontFamily: document.getElementById("fontFamily").value,
-    textColor: document.getElementById("textColor").value,
-    shadowColor: document.getElementById("shadowColor").value,
-    posX: parseInt(document.getElementById("posX").value),
-    posY: parseInt(document.getElementById("posY").value),
-    inAnim: document.getElementById("inAnimation").value,
-    outAnim: document.getElementById("outAnimation").value,
-    duration: parseInt(document.getElementById("duration").value)
-  };
-  layers.push(l);
-  renderLayerList();
+let l={
+text:text.value,
+size:size.value,
+color:color.value,
+effect:effect.value,
+x:100,y:100
+};
+layers.push(l);
+render();
 }
 
-function renderLayerList(){
-  let list=document.getElementById("layerList");
-  list.innerHTML="";
-  layers.forEach((l,i)=>{
-    let div=document.createElement("div");
-    div.className="layer-control";
-    div.innerHTML=`${i+1}: ${l.text} <button onclick="removeLayer(${i})">❌</button>`;
-    list.appendChild(div);
-  });
+function render(){
+stage.innerHTML="";
+layers.forEach(l=>{
+let div=document.createElement("div");
+div.className="layer "+l.effect;
+div.innerText=l.text;
+div.style.fontSize=l.size+"px";
+div.style.color=l.color;
+div.style.left=l.x+"px";
+div.style.top=l.y+"px";
+drag(div,l);
+stage.appendChild(div);
+});
 }
 
-function removeLayer(i){ layers.splice(i,1); renderLayerList(); }
+function drag(el,l){
+el.onmousedown=e=>{
+let ox=e.clientX-el.offsetLeft;
+let oy=e.clientY-el.offsetTop;
+document.onmousemove=e=>{
+el.style.left=e.clientX-ox+"px";
+el.style.top=e.clientY-oy+"px";
+l.x=el.offsetLeft;
+l.y=el.offsetTop;
+}
+document.onmouseup=()=>document.onmousemove=null;
+}
+}
 
-function playPreview(){
-  clearInterval(interval);
-  let box=document.getElementById("videoBox");
-  let slider=document.getElementById("timelineSlider");
-  box.innerHTML="";
-  slider.value=0;
-  let totalTime=layers.reduce((sum,l)=>sum+l.duration,0)*1000;
-  let currentTime=0;
-  let index=0;
+function startSpeech(){
+let rec=new(window.SpeechRecognition||webkitSpeechRecognition)();
+rec.lang="en-US";
+rec.start();
+rec.onresult=e=>{
+text.value=e.results[0][0].transcript;
+addLayer();
+};
+}
 
-  function showLayer(){
-    if(index>=layers.length) return;
-    let l=layers[index];
-    let div=document.createElement("div");
-    div.className="textLayer glow "+l.inAnim;
-    div.innerText=l.text;
-    div.style.fontSize=l.fontSize+"px";
-    div.style.fontFamily=l.fontFamily;
-    div.style.color=l.textColor;
-    div.style.setProperty('--shadowColor',l.shadowColor);
-    div.style.left=l.posX+"px";
-    div.style.top=l.posY+"px";
-    div.style.opacity="1";
-    box.appendChild(div);
+function recordVoice(){
+navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+let recorder=new MediaRecorder(stream);
+recorder.start();
+setTimeout(()=>recorder.stop(),5000);
+recorder.ondataavailable=e=>{
+music.src=URL.createObjectURL(e.data);
+music.play();
+}
+});
+}
 
-    setTimeout(()=>{
-      div.classList.remove(l.inAnim);
-      div.classList.add(l.outAnim);
-    },l.duration*1000);
+function setMusic(e){
+music.src=URL.createObjectURL(e.target.files[0]);
+music.play();
+audioCtx=new AudioContext();
+let src=audioCtx.createMediaElementSource(music);
+analyser=audioCtx.createAnalyser();
+src.connect(analyser);
+analyser.connect(audioCtx.destination);
+analyser.fftSize=64;
+dataArray=new Uint8Array(analyser.frequencyBinCount);
+beatLoop();
+}
 
-    setTimeout(()=>{
-      box.removeChild(div);
-      index++;
-      showLayer();
-    },(l.duration+1)*1000);
-  }
+function beatLoop(){
+if(!analyser)return;
+requestAnimationFrame(beatLoop);
+analyser.getByteFrequencyData(dataArray);
+let avg=dataArray.reduce((a,b)=>a+b)/dataArray.length;
+document.querySelectorAll(".layer").forEach(el=>{
+el.style.transform="scale("+(1+avg/500)+")";
+});
+}
 
-  showLayer();
+function setBG(e){
+let file=e.target.files[0];
+if(file.type.startsWith("video")){
+let v=document.createElement("video");
+v.src=URL.createObjectURL(file);
+v.autoplay=true;v.loop=true;v.muted=true;
+v.style.width="100%";v.style.height="100%";
+stage.innerHTML="";
+stage.appendChild(v);
+}else{
+let r=new FileReader();
+r.onload=()=>stage.style.backgroundImage=`url(${r.result})`;
+r.readAsDataURL(file);
+}
+}
 
-  interval=setInterval(()=>{
-    currentTime+=100;
-    slider.value=(currentTime/totalTime)*100;
-    if(currentTime>=totalTime) clearInterval(interval);
-  },100);
+function exportVideo(){
+let stream=stage.captureStream(60);
+let rec=new MediaRecorder(stream);
+let chunks=[];
+rec.ondataavailable=e=>chunks.push(e.data);
+rec.onstop=()=>{
+let blob=new Blob(chunks,{type:"video/webm"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="AI-Battle-Final.webm";
+a.click();
+};
+rec.start();
+setTimeout(()=>rec.stop(),8000);
+}
+
+function saveProject(){
+let blob=new Blob([JSON.stringify(layers)],{type:"application/json"});
+let a=document.createElement("a");
+a.href=URL.createObjectURL(blob);
+a.download="project.json";
+a.click();
 }
 </script>
 
